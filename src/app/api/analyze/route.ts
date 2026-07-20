@@ -10,10 +10,10 @@ export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json();
+    const { rooms } = await req.json();
 
-    if (!image) {
-      return new Response("No image provided", { status: 400 });
+    if (!rooms || !Array.isArray(rooms) || rooms.length === 0) {
+      return new Response("No room data provided", { status: 400 });
     }
 
     // Fetch live product catalog for context
@@ -21,32 +21,33 @@ export async function POST(req: Request) {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products`);
       const { data: allProducts } = await res.json();
-      productContext = allProducts.map((p: any) => `${p.name} (Coverage: ${p.specs?.coverageSqFt || 'unknown'} sq ft, Category: ${p.category})`).join(", ");
+      productContext = allProducts.map((p: any) => `${p.name} (Coverage: ${p.specs?.coverageSqFt || 'unknown'} sq ft, Category: ${p.category}, Price: $${p.price})`).join(", ");
     } catch (e) {
       console.error("Failed to fetch products for context, using default");
     }
 
-    // Use the base64 image data
-    const base64Data = image.split(",")[1] || image;
+    const roomDescriptions = rooms.map((r: any, i: number) => 
+      `Room ${i + 1}: ${r.name} - approximately ${r.sqft} sq ft`
+    ).join("\n");
 
     const result = await generateText({
-      model: groq("llama-3.2-11b-vision-preview") as any,
+      model: groq("llama-3.3-70b-versatile") as any,
+      system: `You are an elite Aerio Deployment Strategist. Your job is to analyze home room layouts and recommend the perfect Aerio air purifier for each room.
+
+Here is the Aerio product catalog: ${productContext}
+
+Rules:
+1. Match each room to the perfect Aerio purifier based on the room's square footage and the product's coverage area.
+2. Generate a professional 'Aerio Action Plan' in Markdown format.
+3. ALWAYS include a Markdown table with columns: 'Room', 'Sq Ft', 'Recommended Model', 'Price'.
+4. Add a total estimated investment at the bottom.
+5. Include a brief explanation for each recommendation.
+6. Sound highly professional, premium, and authoritative.
+7. Keep it concise but comprehensive.`,
       messages: [
         {
-          role: "system",
-          content: `You are an elite Aerio Deployment Strategist. Your job is to analyze home floor plans, blueprints, room photos, or HVAC layouts.
-          1. Visually identify rooms and estimate their square footage (if possible from the plan) or use standard sizes.
-          2. Match each room to the perfect Aerio purifier based on this catalog: ${productContext}
-          3. Generate a professional 'Aerio Action Plan' in Markdown format.
-          4. INCLUDE a Markdown table that maps 'Room', 'Estimated Sq Ft', and 'Recommended Aerio Model'.
-          5. Sound highly professional, premium, and authoritative.`
-        },
-        {
           role: "user",
-          content: [
-            { type: "text", text: "Please analyze this floor plan / room image and generate an Aerio deployment strategy." },
-            { type: "image", image: base64Data }
-          ]
+          content: `Please generate an Aerio deployment strategy for my home with the following rooms:\n\n${roomDescriptions}`
         }
       ]
     });

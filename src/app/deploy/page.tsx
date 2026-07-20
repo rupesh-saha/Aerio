@@ -1,42 +1,43 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { UploadCloud, FileText, Download, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { FileText, Download, Sparkles, Loader2, Plus, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
+interface Room {
+  name: string;
+  sqft: string;
+}
+
+const ROOM_PRESETS = [
+  "Living Room", "Bedroom", "Master Bedroom", "Kitchen", 
+  "Home Office", "Nursery", "Dining Room", "Basement",
+  "Garage", "Bathroom", "Guest Room", "Sunroom"
+];
+
 export default function DeployPage() {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [rooms, setRooms] = useState<Room[]>([{ name: "Living Room", sqft: "300" }]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (!selected) return;
+  const addRoom = () => {
+    setRooms([...rooms, { name: "", sqft: "" }]);
+  };
 
-    setFile(selected);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 1200;
-        let scaleSize = MAX_WIDTH / img.width;
-        if (scaleSize > 1) scaleSize = 1; // don't scale up
-        canvas.width = img.width * scaleSize;
-        canvas.height = img.height * scaleSize;
-        const ctx = canvas.getContext("2d");
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-        setPreview(canvas.toDataURL("image/jpeg", 0.7));
-      };
-      img.src = e.target?.result as string;
-    };
-    reader.readAsDataURL(selected);
+  const removeRoom = (index: number) => {
+    if (rooms.length <= 1) return;
+    setRooms(rooms.filter((_, i) => i !== index));
+  };
+
+  const updateRoom = (index: number, field: keyof Room, value: string) => {
+    const updated = [...rooms];
+    updated[index][field] = value;
+    setRooms(updated);
   };
 
   const handleAnalyze = async () => {
-    if (!preview) return;
+    const validRooms = rooms.filter(r => r.name && r.sqft);
+    if (validRooms.length === 0) return;
     
     setIsAnalyzing(true);
     setResult(null);
@@ -45,7 +46,7 @@ export default function DeployPage() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: preview }),
+        body: JSON.stringify({ rooms: validRooms }),
       });
 
       if (!res.ok) {
@@ -57,7 +58,7 @@ export default function DeployPage() {
       setResult(data.markdown);
     } catch (error: any) {
       console.error(error);
-      alert("Failed to analyze document: " + error.message);
+      alert("Failed to generate strategy: " + error.message);
     } finally {
       setIsAnalyzing(false);
     }
@@ -76,6 +77,8 @@ export default function DeployPage() {
     URL.revokeObjectURL(url);
   };
 
+  const isValid = rooms.some(r => r.name && r.sqft);
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] pt-32 pb-24 px-6 md:px-12">
       <div className="max-w-5xl mx-auto">
@@ -87,54 +90,85 @@ export default function DeployPage() {
             Home Deployment Strategy
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            Upload your home floor plan. Our AI strategist will analyze the square footage and generate a customized Aerio deployment plan for every room.
+            Tell us about your rooms. Our AI strategist will match each space to the perfect Aerio purifier and generate a customized deployment plan.
           </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column: Upload & Preview */}
+          {/* Left Column: Room Input */}
           <div className="flex flex-col gap-6">
-            <div 
-              className={`border-2 border-dashed rounded-3xl p-12 text-center transition-all ${
-                preview ? "border-[#0E5E56] bg-[#0E5E56]/5" : "border-gray-300 hover:border-[#0E5E56]/50 hover:bg-gray-50 bg-white"
-              }`}
-            >
-              {!preview ? (
-                <div className="flex flex-col items-center cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                  <UploadCloud className="w-12 h-12 text-gray-400 mb-4" />
-                  <p className="text-gray-900 font-medium mb-1">Click to upload floor plan</p>
-                  <p className="text-sm text-gray-500">Supports PDF, PNG, JPG</p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <CheckCircle2 className="w-12 h-12 text-[#0E5E56] mb-4" />
-                  <p className="text-[#0E5E56] font-medium mb-1">{file?.name}</p>
-                  <button 
-                    onClick={() => { setFile(null); setPreview(null); setResult(null); }}
-                    className="text-sm text-gray-500 hover:underline mt-4"
-                  >
-                    Remove file
-                  </button>
-                </div>
-              )}
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                accept="image/*,application/pdf"
-                className="hidden" 
-              />
+            <div className="bg-white rounded-3xl border border-black/5 shadow-sm p-6 md:p-8">
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Your Rooms</h2>
+              
+              <div className="flex flex-col gap-4">
+                {rooms.map((room, index) => (
+                  <div key={index} className="flex gap-3 items-start">
+                    <div className="flex-1 flex flex-col gap-2">
+                      <select
+                        value={ROOM_PRESETS.includes(room.name) ? room.name : "__custom__"}
+                        onChange={(e) => {
+                          if (e.target.value === "__custom__") {
+                            updateRoom(index, "name", "");
+                          } else {
+                            updateRoom(index, "name", e.target.value);
+                          }
+                        }}
+                        className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:border-[#0E5E56]/20 focus:ring-2 focus:ring-[#0E5E56]/10 outline-none transition-all text-gray-700 appearance-none cursor-pointer"
+                      >
+                        <option value="" disabled>Select room type...</option>
+                        {ROOM_PRESETS.map(preset => (
+                          <option key={preset} value={preset}>{preset}</option>
+                        ))}
+                        <option value="__custom__">Custom...</option>
+                      </select>
+                      {!ROOM_PRESETS.includes(room.name) && room.name !== "" && (
+                        <input
+                          type="text"
+                          value={room.name}
+                          onChange={(e) => updateRoom(index, "name", e.target.value)}
+                          placeholder="Room name"
+                          className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:border-[#0E5E56]/20 focus:ring-2 focus:ring-[#0E5E56]/10 outline-none transition-all text-gray-700"
+                        />
+                      )}
+                    </div>
+                    <div className="w-28">
+                      <input
+                        type="number"
+                        value={room.sqft}
+                        onChange={(e) => updateRoom(index, "sqft", e.target.value)}
+                        placeholder="Sq ft"
+                        className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:border-[#0E5E56]/20 focus:ring-2 focus:ring-[#0E5E56]/10 outline-none transition-all text-gray-700 text-center"
+                      />
+                      <p className="text-xs text-gray-400 text-center mt-1">sq ft</p>
+                    </div>
+                    <button
+                      onClick={() => removeRoom(index)}
+                      disabled={rooms.length <= 1}
+                      className="mt-2 p-2 text-gray-400 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={addRoom}
+                className="mt-4 w-full py-3 border-2 border-dashed border-gray-200 hover:border-[#0E5E56]/30 rounded-xl text-sm font-medium text-gray-500 hover:text-[#0E5E56] transition-all flex items-center justify-center gap-2"
+              >
+                <Plus className="w-4 h-4" /> Add another room
+              </button>
             </div>
 
             <button
               onClick={handleAnalyze}
-              disabled={!preview || isAnalyzing}
+              disabled={!isValid || isAnalyzing}
               className="w-full py-4 bg-[#0E5E56] hover:bg-[#0A4A43] text-white rounded-2xl font-medium transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isAnalyzing ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing Square Footage...
+                  Generating Strategy...
                 </>
               ) : (
                 <>
@@ -153,8 +187,8 @@ export default function DeployPage() {
                   <div className="absolute inset-0 border-4 border-[#0E5E56]/20 rounded-full"></div>
                   <div className="absolute inset-0 border-4 border-[#0E5E56] rounded-full border-t-transparent animate-spin"></div>
                 </div>
-                <h3 className="text-xl font-medium text-gray-900 mb-2">Analyzing Blueprint...</h3>
-                <p className="text-gray-500 text-sm animate-pulse">Calculating room dimensions and mapping Aerio devices</p>
+                <h3 className="text-xl font-medium text-gray-900 mb-2">Crafting Your Strategy...</h3>
+                <p className="text-gray-500 text-sm animate-pulse">Matching rooms to Aerio devices</p>
               </div>
             )}
 
