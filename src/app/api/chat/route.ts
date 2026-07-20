@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     const result = await streamText({
-      model: google("gemini-1.5-pro") as any,
+      model: google("gemini-2.0-flash") as any,
       system: `You are Aerio Concierge, a premium AI shopping assistant for Aerio, a luxury air purifier brand.
       You help customers find the perfect air purifier for their home.
       Always be polite, concise, and luxurious in your tone.
@@ -47,6 +47,6 @@ export async function POST(req: Request) {
     return result.toDataStreamResponse();
   } catch (error) {
     console.error("Chat API Error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), { status: 500 });
   }
 }

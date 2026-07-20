@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     }
 
     const result = await generateText({
-      model: google("gemini-1.5-pro") as any,
+      model: google("gemini-2.0-flash") as any,
       system: `You are an elite Aerio Deployment Strategist. Your job is to analyze home floor plans, blueprints, or HVAC layouts.
       1. Visually identify rooms and estimate their square footage (if possible from the plan) or use standard sizes.
       2. Match each room to the perfect Aerio purifier based on this catalog: ${productContext}
