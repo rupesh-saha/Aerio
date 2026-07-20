@@ -17,7 +17,21 @@ export default function DeployPage() {
 
     setFile(selected);
     const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target?.result as string);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        let scaleSize = MAX_WIDTH / img.width;
+        if (scaleSize > 1) scaleSize = 1; // don't scale up
+        canvas.width = img.width * scaleSize;
+        canvas.height = img.height * scaleSize;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setPreview(canvas.toDataURL("image/jpeg", 0.7));
+      };
+      img.src = e.target?.result as string;
+    };
     reader.readAsDataURL(selected);
   };
 
