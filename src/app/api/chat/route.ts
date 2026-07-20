@@ -1,9 +1,9 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createGroq } from "@ai-sdk/groq";
 import { streamText, tool } from "ai";
 import { z } from "zod";
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 export const maxDuration = 30;
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     const result = await streamText({
-      model: google("gemini-2.0-flash") as any,
+      model: groq("llama-3.3-70b-versatile") as any,
       system: `You are Aerio Concierge, a premium AI shopping assistant for Aerio, a luxury air purifier brand.
       You help customers find the perfect air purifier for their home.
       Always be polite, concise, and luxurious in your tone.

@@ -1,22 +1,21 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createGroq } from "@ai-sdk/groq";
 import { generateText } from "ai";
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
-export const maxDuration = 60; // Document analysis takes longer
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json(); // Expected as a base64 string
+    const { image } = await req.json();
 
     if (!image) {
       return new Response("No image provided", { status: 400 });
     }
 
-    // Since we don't want to hardcore the products in the prompt if they change, 
-    // we fetch them to inject into the system prompt.
+    // Fetch live product catalog for context
     let productContext = "Aerio Nano (Compact), Aerio Core (Medium), Aerio Max (Large), Aerio Pro (Extra Large), Aerio Nursery, Aerio Outdoor";
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products`);
@@ -27,19 +26,22 @@ export async function POST(req: Request) {
     }
 
     const result = await generateText({
-      model: google("gemini-2.0-flash") as any,
-      system: `You are an elite Aerio Deployment Strategist. Your job is to analyze home floor plans, blueprints, or HVAC layouts.
-      1. Visually identify rooms and estimate their square footage (if possible from the plan) or use standard sizes.
-      2. Match each room to the perfect Aerio purifier based on this catalog: ${productContext}
-      3. Generate a professional 'Aerio Action Plan' in Markdown format.
-      4. INCLUDE a Markdown table that maps 'Room', 'Estimated Sq Ft', and 'Recommended Aerio Model'.
-      5. Sound highly professional, premium, and authoritative.`,
+      model: groq("llama-4-scout-17b-16e-instruct") as any,
       messages: [
+        {
+          role: "system",
+          content: `You are an elite Aerio Deployment Strategist. Your job is to analyze home floor plans, blueprints, room photos, or HVAC layouts.
+          1. Visually identify rooms and estimate their square footage (if possible from the plan) or use standard sizes.
+          2. Match each room to the perfect Aerio purifier based on this catalog: ${productContext}
+          3. Generate a professional 'Aerio Action Plan' in Markdown format.
+          4. INCLUDE a Markdown table that maps 'Room', 'Estimated Sq Ft', and 'Recommended Aerio Model'.
+          5. Sound highly professional, premium, and authoritative.`
+        },
         {
           role: "user",
           content: [
-            { type: "text", text: "Please analyze this floor plan and generate an Aerio deployment strategy." },
-            { type: "image", image: image.split(",")[1] || image } // Strip data URL prefix if present
+            { type: "text", text: "Please analyze this floor plan / room image and generate an Aerio deployment strategy." },
+            { type: "image", image: image.split(",")[1] || image }
           ]
         }
       ]
