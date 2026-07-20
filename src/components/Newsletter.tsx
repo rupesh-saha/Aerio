@@ -37,16 +37,16 @@ export function Newsletter() {
           Join our newsletter for early access to new products, filter replacement discounts, and tips for a healthier home.
         </p>
         
-        <form className="newsletter-element w-full max-w-md flex flex-col sm:flex-row gap-3 relative" onSubmit={(e) => e.preventDefault()}>
+        <form className="newsletter-element w-full max-w-md flex flex-col sm:flex-row gap-3 sm:gap-2 relative" onSubmit={(e) => e.preventDefault()}>
           <input 
             type="email" 
             placeholder="Your email address" 
-            className="flex-1 h-14 px-6 rounded-[var(--radius-input)] bg-white dark:bg-black border border-black/10 dark:border-white/10 text-brand-graphite dark:text-brand-sand-light placeholder:text-black/30 dark:placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 transition-all"
+            className="flex-1 h-14 md:h-14 px-6 rounded-[var(--radius-input)] bg-white dark:bg-black border border-black/10 dark:border-white/10 text-brand-graphite dark:text-brand-sand-light placeholder:text-black/30 dark:placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 transition-all appearance-none w-full"
             required
           />
           <button 
             type="submit"
-            className="h-14 px-8 rounded-[var(--radius-input)] bg-brand-teal text-white font-medium hover:bg-brand-teal/90 transition-colors flex items-center justify-center gap-2 group"
+            className="h-14 md:h-14 px-8 rounded-[var(--radius-input)] bg-brand-teal text-white font-medium hover:bg-brand-teal/90 transition-colors flex items-center justify-center gap-2 group w-full sm:w-auto flex-shrink-0"
           >
             Subscribe
             <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />

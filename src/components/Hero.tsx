@@ -58,7 +58,7 @@ export function Hero() {
         </motion.span>
         
         <motion.h1 
-          className="text-[3.5rem] md:text-[5.5rem] lg:text-[7rem] leading-[1.05] tracking-tight font-medium text-brand-graphite text-balance"
+          className="text-[3rem] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] leading-[1.05] tracking-tight font-medium text-brand-graphite text-balance"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}

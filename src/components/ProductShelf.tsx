@@ -84,11 +84,11 @@ export function ProductShelf() {
   return (
     <section ref={sectionRef} id="products" className="py-section-v px-margin-edge bg-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-brand-graphite mb-4">
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-brand-graphite mb-4">
             Meet the Aerio Family
           </h2>
-          <p className="text-xl text-brand-graphite/60 max-w-xl mx-auto font-light">
+          <p className="text-lg md:text-xl text-brand-graphite/60 max-w-xl mx-auto font-light px-4">
             A purifier perfectly sized for every room in your home.
           </p>
         </div>
@@ -98,15 +98,14 @@ export function ProductShelf() {
             <div
               key={product.id}
               ref={(el) => { cardsRef.current[i] = el; }}
-              className="product-card flex flex-col bg-[#f1f3f4] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden pt-12 md:pt-16 px-6 md:px-8 relative isolate"
-              style={{ minHeight: '650px' }}
+              className="product-card flex flex-col bg-[#f1f3f4] rounded-[2rem] md:rounded-[3rem] overflow-hidden pt-8 md:pt-16 px-6 md:px-8 relative isolate min-h-[500px] md:min-h-[650px]"
             >
               {/* Product Details Area (Top) */}
               <div className="flex flex-col items-center text-center z-10 relative">
-                <h3 className="text-3xl md:text-4xl font-medium text-brand-graphite mb-3 tracking-tight">
+                <h3 className="text-2xl md:text-4xl font-medium text-brand-graphite mb-3 tracking-tight">
                   {product.name}
                 </h3>
-                <p className="text-brand-graphite/70 max-w-xs mx-auto mb-8 text-balance font-light leading-relaxed">
+                <p className="text-sm md:text-base text-brand-graphite/70 max-w-xs mx-auto mb-6 md:mb-8 text-balance font-light leading-relaxed">
                   {product.description}
                 </p>
                 <Link 
@@ -118,10 +117,10 @@ export function ProductShelf() {
               </div>
 
               {/* Product Image Area (Bottom) */}
-              <div className="w-full flex-1 relative mt-12 flex items-end justify-center pointer-events-none">
+              <div className="w-full flex-1 relative mt-8 md:mt-12 flex items-end justify-center pointer-events-none">
                 <div 
                   ref={(el) => { imageRefs.current[i] = el; }}
-                  className="relative w-full h-[400px] md:h-[480px] origin-bottom"
+                  className="relative w-full h-[300px] sm:h-[400px] md:h-[480px] origin-bottom"
                 >
                   <Image
                     src={product.image}
