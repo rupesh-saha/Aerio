@@ -8,19 +8,38 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  
+  /* Brand colors */
+  --color-brand-teal: #0B4F3F;
+  --color-brand-graphite: #1A1A1A;
+  --color-brand-sand: #E4E2DC;
+  --color-brand-sand-light: #FBF9F3;
+
+  /* Typography */
+  --text-display-hero: 4.5rem;
+  --text-display-hero--line-height: 1.1;
+  --text-display-hero--letter-spacing: -0.02em;
+  
+  --text-headline-section: 3rem;
+  --text-headline-section--line-height: 1.2;
+  --text-headline-section--letter-spacing: -0.01em;
+
+  /* Border Radii */
+  --radius-product: 1.5rem;
+  --radius-input: 0.75rem;
+
+  /* Spacing */
+  --spacing-margin-edge: 2rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-section-v: 8rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
 }
