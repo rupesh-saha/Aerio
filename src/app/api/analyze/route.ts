@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const base64Data = image.split(",")[1] || image;
 
     const result = await generateText({
-      model: groq("llama-4-scout-17b-16e-instruct") as any,
+      model: groq("llama-3.2-11b-vision-preview") as any,
       messages: [
         {
           role: "system",
