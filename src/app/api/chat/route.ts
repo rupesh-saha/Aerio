@@ -15,6 +15,7 @@ export async function POST(req: Request) {
 
     const result = await streamText({
       model: groq("llama-3.3-70b-versatile") as any,
+      maxSteps: 3,
       system: `You are Aerio Concierge, a premium AI shopping assistant for Aerio, a luxury air purifier brand.
       You help customers find the perfect air purifier for their home.
       Always be polite, concise, and luxurious in your tone.

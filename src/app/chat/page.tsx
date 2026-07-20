@@ -75,7 +75,7 @@ export default function ChatPage() {
                     }`}>
                     {m.role === "user" ? (
                       m.content
-                    ) : m.toolInvocations ? (
+                    ) : m.toolInvocations && !m.content ? (
                       <div className="flex items-center gap-2 text-gray-500 text-sm italic">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         Searching Aerio inventory...
