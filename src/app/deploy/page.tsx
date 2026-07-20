@@ -48,12 +48,16 @@ export default function DeployPage() {
         body: JSON.stringify({ image: preview }),
       });
 
-      if (!res.ok) throw new Error("Analysis failed");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.error || "Analysis failed");
+      }
       
       const data = await res.json();
       setResult(data.markdown);
-    } catch (error) {
-      alert("Failed to analyze document. Please check your API keys or try again.");
+    } catch (error: any) {
+      console.error(error);
+      alert("Failed to analyze document: " + error.message);
     } finally {
       setIsAnalyzing(false);
     }
