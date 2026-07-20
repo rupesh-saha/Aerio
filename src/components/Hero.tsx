@@ -42,7 +42,7 @@ export function Hero() {
       </motion.div>
       
       <motion.div 
-        className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto space-y-8 mt-[-10vh]"
+        className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto space-y-8"
         style={{ opacity: opacityText, y: yText }}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
