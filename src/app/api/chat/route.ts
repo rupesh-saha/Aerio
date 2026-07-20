@@ -1,9 +1,10 @@
-import { createGroq } from "@ai-sdk/groq";
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, tool } from "ai";
 import { z } from "zod";
 
-const groq = createGroq({
+const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export const maxDuration = 30;
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
             try {
               const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/products?${queryParams.toString()}`);
               const data = await res.json();
-              return data.data; // Array of products
+              return data.data;
             } catch (error) {
               return { error: "Failed to fetch products" };
             }

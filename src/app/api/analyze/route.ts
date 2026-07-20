@@ -1,8 +1,9 @@
-import { createGroq } from "@ai-sdk/groq";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
-const groq = createGroq({
+const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export const maxDuration = 60;
@@ -25,6 +26,9 @@ export async function POST(req: Request) {
       console.error("Failed to fetch products for context, using default");
     }
 
+    // Use the base64 image data
+    const base64Data = image.split(",")[1] || image;
+
     const result = await generateText({
       model: groq("llama-4-scout-17b-16e-instruct") as any,
       messages: [
@@ -41,7 +45,7 @@ export async function POST(req: Request) {
           role: "user",
           content: [
             { type: "text", text: "Please analyze this floor plan / room image and generate an Aerio deployment strategy." },
-            { type: "image", image: image.split(",")[1] || image }
+            { type: "image", image: base64Data }
           ]
         }
       ]
