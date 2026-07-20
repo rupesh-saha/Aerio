@@ -31,7 +31,7 @@ export default async function AddItemPage() {
           <p className="text-gray-500 mb-8">Register your purchased Aerio items to activate your warranty.</p>
 
           {/* 2. THE FORM */}
-          <form action={createItem} className="flex flex-col gap-6">
+          <form action={createItem as any} className="flex flex-col gap-6">
             
             <div className="flex flex-col gap-2">
               <label htmlFor="title" className="text-sm font-medium text-gray-700">Device Model (Title)</label>

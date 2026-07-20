@@ -12,8 +12,8 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const result = streamText({
-      model: google("gemini-1.5-pro"),
+    const result = await streamText({
+      model: google("gemini-1.5-pro") as any,
       system: `You are Aerio Concierge, a premium AI shopping assistant for Aerio, a luxury air purifier brand.
       You help customers find the perfect air purifier for their home.
       Always be polite, concise, and luxurious in your tone.
