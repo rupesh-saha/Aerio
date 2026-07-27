@@ -5,35 +5,14 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { MagneticButton } from "./MagneticButton";
+import type { Product } from "@/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const products = [
-  {
-    id: "aerio-pro",
-    name: "Aerio Pro",
-    description: "Maximum coverage for large living spaces up to 1,200 sq ft.",
-    price: "$599",
-    image: "/aerio-pro.png"
-  },
-  {
-    id: "aerio-classic",
-    name: "Aerio",
-    description: "The original perfect balance for bedrooms and studies.",
-    price: "$399",
-    image: "/aerio.png"
-  },
-  {
-    id: "aerio-mini",
-    name: "Aerio Mini",
-    description: "Compact design for personal spaces and nurseries.",
-    price: "$249",
-    image: "/aerio-mini.png"
-  }
-];
-
-export function ProductShelf() {
+export function ProductShelf({ initialProducts }: { initialProducts: Product[] }) {
+  const router = useRouter();
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -94,36 +73,41 @@ export function ProductShelf() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          {products.map((product, i) => (
+          {initialProducts.map((product, i) => (
             <div
-              key={product.id}
+              key={product._id}
               ref={(el) => { cardsRef.current[i] = el; }}
-              className="product-card flex flex-col bg-[#f1f3f4] rounded-[2rem] md:rounded-[3rem] overflow-hidden pt-8 md:pt-16 px-6 md:px-8 relative isolate min-h-[500px] md:min-h-[650px]"
+              className="product-card flex flex-col bg-white rounded-[2rem] overflow-hidden pt-8 md:pt-10 px-6 relative isolate border border-black/5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-20px_rgba(11,79,63,0.1)] transition-shadow duration-500"
             >
+              <div className="absolute inset-0 bg-gradient-to-b from-brand-sand-light/80 to-transparent pointer-events-none z-0" />
+              
               {/* Product Details Area (Top) */}
               <div className="flex flex-col items-center text-center z-10 relative">
-                <h3 className="text-2xl md:text-4xl font-medium text-brand-graphite mb-3 tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-medium text-brand-graphite mb-2 tracking-tight">
                   {product.name}
                 </h3>
-                <p className="text-sm md:text-base text-brand-graphite/70 max-w-xs mx-auto mb-6 md:mb-8 text-balance font-light leading-relaxed">
+                <p className="text-brand-teal font-mono text-sm tracking-widest mb-3">
+                  ${product.price}
+                </p>
+                <p className="text-sm md:text-base text-brand-graphite/70 max-w-xs mx-auto mb-6 text-balance font-light leading-relaxed">
                   {product.description}
                 </p>
-                <Link 
-                  href={`/shop`}
-                  className="px-6 py-2.5 rounded-full border border-black/20 text-brand-graphite font-medium text-sm hover:bg-black/5 hover:border-black/30 transition-all bg-[#f1f3f4] backdrop-blur-sm shadow-sm"
+                <MagneticButton 
+                  onClick={() => router.push(`/shop/${product.slug}`)}
+                  className="px-6 py-2.5 rounded-full border border-black/10 text-brand-graphite font-medium text-sm hover:bg-brand-teal hover:text-white hover:border-brand-teal transition-all bg-white backdrop-blur-sm shadow-sm"
                 >
                   Learn more
-                </Link>
+                </MagneticButton>
               </div>
 
               {/* Product Image Area (Bottom) */}
-              <div className="w-full flex-1 relative mt-8 md:mt-12 flex items-end justify-center pointer-events-none">
+              <div className="w-full flex-1 relative mt-8 flex items-end justify-center pointer-events-none">
                 <div 
                   ref={(el) => { imageRefs.current[i] = el; }}
-                  className="relative w-full h-[300px] sm:h-[400px] md:h-[480px] origin-bottom"
+                  className="relative w-full h-[250px] sm:h-[300px] md:h-[350px] origin-bottom"
                 >
                   <Image
-                    src={product.image}
+                    src={product.imageUrl}
                     alt={product.name}
                     fill
                     className="object-contain object-bottom drop-shadow-2xl mix-blend-darken"
