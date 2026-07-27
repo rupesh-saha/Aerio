@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aerio - Premium Smart Air Purification
 
-## Getting Started
+**Live Site URL:** [https://aerio-air.vercel.app/](https://aerio-air.vercel.app/)
 
-First, run the development server:
+## 📖 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Aerio is a modern, high-end e-commerce platform for smart air purifiers. Built to offer a seamless and luxurious shopping experience, the application features smooth scroll animations, immersive 3D-like parallax interactions, and a fully functional AI-powered shopping assistant. From dynamic product browsing to an intelligent Home Strategy planner that analyzes your living space, Aerio sets a new standard for smart home retail.
+
+## ✨ Core Features
+
+* **AI Concierge & Home Strategy:** Integrated Groq-powered AI shopping assistant that answers questions, analyzes room sizes, and generates tailored product recommendations.
+* **Immersive Premium UI:** High-performance animations and scroll-driven interactions built with GSAP and Framer Motion, offering an editorial, luxury aesthetic.
+* **Full E-Commerce Flow:** Robust cart management, product shelves, dynamic shop pages, and detail views.
+* **Secure Authentication:** User accounts and session management handled natively via BetterAuth and a MongoDB backend adapter.
+* **Performance Optimized:** Statically generated and server-rendered routes with Next.js App Router for optimal SEO and instantaneous load times.
+
+## 🛠️ Technology Stack
+
+* **Frontend:** Next.js (App Router), Tailwind CSS v4, Lucide React
+* **Animations:** GSAP (ScrollTrigger), Framer Motion, Lenis (Smooth Scrolling), React Three Fiber
+* **Backend:** Node.js API Routes, MongoDB
+* **Authentication:** BetterAuth
+* **AI Integration:** Next.js AI SDK, Groq (Llama-3.3-70b-versatile)
+
+## 📦 Dependencies
+
+```
+next
+react
+react-dom
+tailwindcss
+gsap
+framer-motion
+lenis
+three
+@react-three/fiber
+@react-three/drei
+better-auth
+mongodb
+ai
+@ai-sdk/openai
+lucide-react
+zod
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started Locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/rupesh-saha/Aerio.git
+   cd Aerio
+   ```
 
-## Learn More
+2. Install dependencies
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up environment variables — create a `.env` file in the root:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```env
+   BETTER_AUTH_SECRET=your_auth_secret_here
+   BETTER_AUTH_URL=http://localhost:3000
+   AERIO_DB_URI=your_mongodb_connection_string
+   GROQ_API_KEY=your_groq_api_key
+   NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+   ```
 
-## Deploy on Vercel
+4. Run the dev server
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔗 Links
+
+* **Live Site:** [https://aerio-air.vercel.app/](https://aerio-air.vercel.app/)
